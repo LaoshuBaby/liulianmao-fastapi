@@ -15,12 +15,16 @@ app = FastAPI()
 
 
 def forward_chat(request: Request):
-    # ask(msg="")
-    ans=ask(
-        msg="Hello can you tell me what's the girl are",
+    body = request.json()
+    model = body.get("model")
+    messages = body.get("messages")
+
+    ans = ask(
+        msg=messages[0]["content"],
         available_models=[],
-        model_series="zhipu",
-        image="",
+        model_series="openai",
+        no_history=False,
+        image_type="none",
     )
     return ans
 
@@ -42,8 +46,12 @@ def forward_embedding(request: Request):
 
 @app.get("/")
 async def hello():
-    # this need to be replaced with a html file, read it and response it
-    return "Hello, user!"
+    return FileResponse("src/index.html")
+
+
+@app.get("/hello")
+async def hello_route():
+    return FileResponse("src/index.html")
 
 
 @app.post("/paas/v1/chat/completions")

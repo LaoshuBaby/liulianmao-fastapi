@@ -23,34 +23,7 @@ A wrapper that can imitate forward gateway and make call use liulianmao
    pip install fastapi liulianmao
    ```
 
-2. 创建一个名为`main.py`的文件，并添加以下代码:
-   ```python
-   from fastapi import FastAPI, Request, HTTPException
-   from liulianmao import ask
-
-   app = FastAPI()
-
-   @app.post("/embedding")
-   async def create_embedding(request: Request):
-       try:
-           body = await request.json()
-           model = body.get("model")
-           input_text = body.get("input")
-
-           # Remap model names if necessary
-           model_mapping = {
-               "gpt-3-turbo": "glm-4"
-           }
-           if model in model_mapping:
-               model = model_mapping[model]
-
-           response = ask(msg=input_text, model=model)
-           return response
-       except Exception as e:
-           raise HTTPException(status_code=500, detail=str(e))
-   ```
-
-3. 运行FastAPI服务器:
+2. 运行FastAPI服务器:
    ```bash
    uvicorn main:app --reload
    ```
@@ -62,7 +35,12 @@ A wrapper that can imitate forward gateway and make call use liulianmao
 ```json
 {
     "model": "gpt-3-turbo",
-    "input": "你好"
+    "messages": [
+        {
+            "role": "user",
+            "content": "你好"
+        }
+    ]
 }
 ```
 
