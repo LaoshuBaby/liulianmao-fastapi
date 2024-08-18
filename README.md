@@ -1,5 +1,5 @@
 # liulianmao-fastapi
-A wrapper that can imitate forward gateway and make call use liulianmao
+一个可以模仿转发网关并使用liulianmao进行调用的包装器
 
 
 这玩意是配合[liulianmao](https://github.com/LaoshuBaby/liulianmao)使用的。
@@ -13,22 +13,21 @@ A wrapper that can imitate forward gateway and make call use liulianmao
 3. 需要对模型的名称或请求地址进行映射
 4. 需要对模型的请求方法进行处理
 
-## Usage Instructions
+## 使用说明
 
-### Setting Up and Running the FastAPI Server
+### 设置和运行FastAPI服务器
 
-1. Install the required dependencies:
+1. 安装所需的依赖项:
    ```bash
-   pip install fastapi zhipuai
+   pip install fastapi liulianmao
    ```
 
-2. Create a file named `main.py` and add the following code:
+2. 创建一个名为`main.py`的文件，并添加以下代码:
    ```python
    from fastapi import FastAPI, Request, HTTPException
-   from zhipuai import ZhipuAI
+   from liulianmao import ask
 
    app = FastAPI()
-   client = ZhipuAI(api_key="your api key")
 
    @app.post("/embedding")
    async def create_embedding(request: Request):
@@ -44,23 +43,20 @@ A wrapper that can imitate forward gateway and make call use liulianmao
            if model in model_mapping:
                model = model_mapping[model]
 
-           response = client.embeddings.create(
-               model=model,
-               input=input_text,
-           )
+           response = ask(msg=input_text, model=model)
            return response
        except Exception as e:
            raise HTTPException(status_code=500, detail=str(e))
    ```
 
-3. Run the FastAPI server:
+3. 运行FastAPI服务器:
    ```bash
    uvicorn main:app --reload
    ```
 
-### Example Requests and Responses
+### 示例请求和响应
 
-#### Example Request
+#### 示例请求
 
 ```json
 {
@@ -69,7 +65,7 @@ A wrapper that can imitate forward gateway and make call use liulianmao
 }
 ```
 
-#### Example Response
+#### 示例响应
 
 ```json
 {
