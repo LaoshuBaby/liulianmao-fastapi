@@ -1,5 +1,5 @@
 # liulianmao-fastapi
-一个可以模仿转发网关并使用liulianmao进行调用的包装器
+A wrapper that can imitate forward gateway and make call use liulianmao
 
 ## 芝士神马？
 

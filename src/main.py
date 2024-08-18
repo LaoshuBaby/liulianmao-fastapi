@@ -15,18 +15,14 @@ app = FastAPI()
 
 
 def forward_chat(request: Request):
-    try:
-        body = request.json()
-        model = body.get("model")
-        input_text = body.get("input")
-
-        if model in const_model_mapping:
-            model = const_model_mapping[model]
-
-        response = ask(msg=input_text, model=model)
-        return response
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # ask(msg="")
+    ans=ask(
+        msg="Hello can you tell me what's the girl are",
+        available_models=[],
+        model_series="zhipu",
+        image="",
+    )
+    return ans
 
 
 def forward_embedding(request: Request):
