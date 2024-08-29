@@ -1,5 +1,5 @@
 import os
-
+import json
 import uvicorn
 from fastapi import FastAPI, HTTPException, Path, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -60,7 +60,13 @@ async def hello():
 
 @app.get("/hello")
 async def hello_route():
-    return FileResponse(os.path.join(os.path.dirname(__file__), "index.html"))
+    system_info = {
+        "os": os.name,
+        "platform": os.sys.platform,
+        "version": os.sys.version,
+        "environment_variables": dict(os.environ)
+    }
+    return JSONResponse(content=system_info)
 
 
 @app.post("/paas/v1/chat/completions")
@@ -90,6 +96,17 @@ async def list_logdir(request: Request):
         logger.error(e)
 
     return JSONResponse({"logs":log_list})
+
+
+@app.get("/logs/{filename}")
+async def get_log_file(filename: str = Path(..., description="The name of the log file to retrieve")):
+    log_folder_path = os.path.join(
+        str(get_user_folder()), PROJECT_FOLDER, "logs"
+    )
+    file_path = os.path.join(log_folder_path, filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Log file not found")
+    return FileResponse(file_path)
 
 
 if __name__ == "__main__":
