@@ -1,5 +1,6 @@
 {
     "python": {
         "entry": "src/main.py"
-    }
+    },
+    "start_command": "python3 src/main.py"
 }
