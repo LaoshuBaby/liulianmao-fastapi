@@ -71,4 +71,8 @@ async def logs_file(filename: str = Path()):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=9000)
+    if os.environ.get("PORT"):
+        working_port=os.environ.get("PORT",8080)
+    else:
+        working_port=9000
+    uvicorn.run(app, host="0.0.0.0", port=working_port)
