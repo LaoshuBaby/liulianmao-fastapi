@@ -2,8 +2,8 @@ import os
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Path, Request
-from fastapi.responses import FileResponse, HTMLResponse
-from liulianmao import ask
+from fastapi.responses import FileResponse, JSONResponse
+from liulianmao import PROJECT_FOLDER, ask, get_user_folder
 from loguru import logger
 
 const_model_mapping = {
@@ -19,19 +19,20 @@ app = FastAPI()
 async def forward_chat(request: Request):
     # 使用 await 来获取请求体中的 JSON 数据
     body = await request.json()
-    logger.critical(body)
-    model = body.get("model")
-    messages = body.get("messages")
+    logger.debug(body)
+    conversation = body.get("messages")
+    logger.trace(body)
 
-    # ask不是异步的，返回简单字符串
+    # ask() 不是异步的，返回简单字符串
     ans = ask(
-        msg=messages[0]["content"],
-        available_models=[],
-        model_series="openai",
+        msg=conversation[0]["content"],
+        available_models=body.get("available_models", ["gpt-4o"]),
+        model_series=body.get("model_series", "openai"),
         no_history=False,
         image_type="none",
+        model=body.get("model"),
     )
-    print(ans)
+    logger.debug(f"[ans]: {ans}")
     return ans
 
 
@@ -64,7 +65,7 @@ async def hello_route():
 
 @app.post("/paas/v1/chat/completions")
 async def pass_v1_chat_completions(request: Request):
-    return forward_chat(request)
+    return await forward_chat(request)
 
 
 @app.post("/paas/v4/chat/completions")
@@ -75,6 +76,20 @@ async def pass_v4_chat_completions(request: Request):
 @app.post("/embedding")
 async def create_embedding(request: Request):
     return await forward_embedding(request)
+
+
+@app.get("/logs")
+async def list_logdir(request: Request):
+    log_folder_path = os.path.join(
+        str(get_user_folder()), PROJECT_FOLDER, "logs"
+    )
+    try:
+        log_list = os.listdir(log_folder_path)
+        logger.debug(log_list)
+    except Exception as e:
+        logger.error(e)
+
+    return JSONResponse({"logs":log_list})
 
 
 if __name__ == "__main__":

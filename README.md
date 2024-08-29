@@ -28,11 +28,20 @@ A wrapper that can imitate forward gateway and make call use liulianmao
    uvicorn main:app --reload
    ```
 
+   或
+
+   py main.py
+
 ### 示例请求和响应
 
-#### 示例请求
+#### 请求的接口：/xxx
+
+**请求**
+
+请求体：以curl表达：
 
 ```json
+curl -X -H xxxxx:port
 {
     "model": "gpt-3-turbo",
     "messages": [
@@ -44,7 +53,7 @@ A wrapper that can imitate forward gateway and make call use liulianmao
 }
 ```
 
-#### 示例响应
+**响应:**
 
 ```json
 {
@@ -82,3 +91,9 @@ A wrapper that can imitate forward gateway and make call use liulianmao
     }
 }
 ```
+
+#### 请求的接口：/xxx
+
+#### 请求的接口：/xxx
+
+#### 请求的接口：/xxx
