@@ -28,7 +28,7 @@ async def environment():
     except Exception as e:
         logger.error(e)
         system_info = {}
-    return JSONResponse(content=system_info)
+    return JSONResponse(content=system_info, status_code=418)
 
 
 @app.post("/paas/v1/chat/completions")
@@ -56,14 +56,11 @@ async def logs(request: Request):
         logger.debug(log_list)
     except Exception as e:
         logger.error(e)
+    return JSONResponse({"logs": log_list})
 
 
 @app.get("/logs/{filename}")
-async def logs_file(
-    filename: str = Path(
-        ..., description="The name of the log file to retrieve"
-    )
-):
+async def logs_file(filename: str = Path()):
     log_folder_path = os.path.join(
         str(get_user_folder()), PROJECT_FOLDER, "logs"
     )
