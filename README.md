@@ -41,7 +41,7 @@ A wrapper that can imitate forward gateway and make call use liulianmao
 请求体：以curl表达：
 
 ```json
-curl -X GET http://localhost:9000/hello
+curl -X GET http://localhost:9000/
 ```
 
 **响应:**
