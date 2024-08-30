@@ -21,7 +21,10 @@ async def forward_chat(request: Request):
     ans = ask(
         msg=conversation[0]["content"],
         available_models=body.get("available_models", ["gpt-4o"]),
-        model_series=body.get("model_series", "openai"),
+        model_series=body.get(
+            "model_series",
+            "openai" if "glm" not in body.get("model") else "zhipu",
+        ),
         no_history=False,
         image_type="none",
         model=body.get("model"),

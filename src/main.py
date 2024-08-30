@@ -28,16 +28,39 @@ async def environment():
     except Exception as e:
         logger.error(e)
         system_info = {}
-    return JSONResponse(content=system_info, status_code=418)
+    return JSONResponse(system_info)
+
+
+@app.get("/meow")
+async def meow():
+    """
+    liulianmao 系列框架标志性API
+    当liulianmao库检测到当前的endpoint能返回这个值时，便认为后端也用了liulianmao框架
+    """
+    return JSONResponse({"liulianmao": "meow"})
+
+
+@app.post("/v1/chat/completions")
+async def v1_chat_completions(request: Request):
+    """
+    OpenAI 兼容接口
+    """
+    return await forward_chat(request)
 
 
 @app.post("/paas/v1/chat/completions")
 async def pass_v1_chat_completions(request: Request):
+    """
+    Zhipu 兼容接口（官网文档已废弃，有人还在用）
+    """
     return await forward_chat(request)
 
 
 @app.post("/paas/v4/chat/completions")
 async def pass_v4_chat_completions(request: Request):
+    """
+    Zhipu 现役接口（遵循官网文档）
+    """
     return await forward_chat(request)
 
 
@@ -72,7 +95,7 @@ async def logs_file(filename: str = Path()):
 
 if __name__ == "__main__":
     if os.environ.get("PORT"):
-        working_port=os.environ.get("PORT",8080)
+        working_port = os.environ.get("PORT", 8080)
     else:
-        working_port=9000
+        working_port = 9000
     uvicorn.run(app, host="0.0.0.0", port=working_port)
