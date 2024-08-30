@@ -25,7 +25,7 @@ async def forward_chat(request: Request):
             "model_series",
             "openai" if "glm" not in body.get("model") else "zhipu",
         ),
-        no_history=False,
+        no_history=True,
         image_type="none",
         model=body.get("model"),
     )
