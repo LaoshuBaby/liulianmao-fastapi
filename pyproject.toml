@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.112.1"
-liulianmao = "^2.3.0"
+liulianmao = "^2.3.0.post1"
 loguru = "^0.7.2"
 uvicorn = "^0.30.6"
 pillow = "^10.4.0"
