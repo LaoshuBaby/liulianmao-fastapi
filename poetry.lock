@@ -224,13 +224,13 @@ files = [
 
 [[package]]
 name = "liulianmao"
-version = "2.2.1.post3"
+version = "2.2.1.post4"
 description = "A LLM client for use from the command line or IDE."
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "liulianmao-2.2.1.post3-py3-none-any.whl", hash = "sha256:3432de96c867d18ef6339fe3703ae7905b9542b3b897d6801e8a7491a0eb4c78"},
-    {file = "liulianmao-2.2.1.post3.tar.gz", hash = "sha256:3dc5c9a730968311bfbf23074d714ebb166b21268293a8a944ddb981e248c11e"},
+    {file = "liulianmao-2.2.1.post4-py3-none-any.whl", hash = "sha256:fef3906ffe512b4831c01373b0318ce318d86ac8ca6920951c8e5771de6b891f"},
+    {file = "liulianmao-2.2.1.post4.tar.gz", hash = "sha256:59e226f101d3050399df218fc7463d7dfa44b5527b4e05a7713d8216337396d5"},
 ]
 
 [package.dependencies]
@@ -491,4 +491,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c2f373529b41347dc5c35def3e22f5b55b1097fab5e5256fa7b1f1f013dbe850"
+content-hash = "4886a4930cbe54d1cce70e28b408f6702791414c5319cb20b49df308fbf91720"
