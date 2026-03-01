@@ -226,6 +226,75 @@ curl -X POST http://localhost:9000/embedding -H "Content-Type: application/json"
 }
 ```
 
+## Omniverse 统一代理接口
+
+### 概述
+
+Omniverse 接口是一个统一的代理接口，可以将所有以 `/omniverse/` 开头的请求转发到配置的目标 endpoint。这样无论使用哪家的模型 API，都不需要再编写具体的适配控制器。
+
+### 配置方法
+
+设置 `OMNIVERSE_ENDPOINT` 环境变量来指定目标 endpoint：
+
+```bash
+# 设置 OpenAI API
+export OMNIVERSE_ENDPOINT=https://api.openai.com
+
+# 设置 Anthropic API
+export OMNIVERSE_ENDPOINT=https://api.anthropic.com
+
+# 设置本地测试 endpoint
+export OMNIVERSE_ENDPOINT=http://localhost:8080
+```
+
+### 使用示例
+
+#### OpenAI 兼容接口
+
+```bash
+curl -X POST http://localhost:9000/omniverse/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-xxx" \
+  -d '{
+    "model": "gpt-4",
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'
+```
+
+#### 智谱 AI 接口
+
+```bash
+curl -X POST http://localhost:9000/omniverse/paas/v4/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer token123" \
+  -d '{
+    "model": "glm-4",
+    "messages": [
+      {"role": "user", "content": "你好！"}
+    ]
+  }'
+```
+
+#### 带查询参数的 GET 请求
+
+```bash
+curl "http://localhost:9000/omniverse/v1/models?limit=10&offset=0" \
+  -H "Authorization: Bearer sk-xxx"
+```
+
+### 功能特性
+
+- **统一入口**: 所有请求通过 `/omniverse/` 前缀访问
+- **路径保留**: 保留 `/omniverse/` 之后的完整路径
+- **查询参数**: 完整保留所有查询参数
+- **多方法支持**: 支持 GET、POST、PUT、DELETE、PATCH、OPTIONS、HEAD 等 HTTP 方法
+- **请求头转发**: 自动转发请求头
+- **错误处理**: 完善的错误处理和日志记录
+
+详细文档请参考 [OMNIVERSE_USAGE.md](./OMNIVERSE_USAGE.md)
+
 ## 部署方法
 
 ### 在Zeabur上部署

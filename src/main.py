@@ -7,6 +7,7 @@ from liulianmao import PROJECT_FOLDER, get_user_folder
 from loguru import logger
 
 from forward import forward_chat, forward_embedding
+from omniverse import get_omniverse_router
 
 app = FastAPI()
 
@@ -93,9 +94,55 @@ async def logs_file(filename: str = Path()):
     return FileResponse(file_path)
 
 
+@app.api_route("/omniverse/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+async def omniverse_proxy(request: Request, path: str):
+    """
+    Omniverse 统一代理接口
+    将所有以 /omniverse/ 开头的请求转发到配置的 endpoint
+    
+    示例:
+    - /omniverse/v1/chat/completion -> {endpoint}/v1/chat/completion
+    - /omniverse/paas/v4/response?token=12345678 -> {endpoint}/paas/v4/response?token=12345678
+    
+    配置:
+    通过环境变量 OMNIVERSE_ENDPOINT 设置目标 endpoint
+    例如: export OMNIVERSE_ENDPOINT=https://api.openai.com
+    """
+    try:
+        router = get_omniverse_router()
+        return await router.forward_request(request, path)
+    except ValueError as e:
+        # 当 OMNIVERSE_ENDPOINT 未设置时
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
 if __name__ == "__main__":
+    import asyncio
+    from omniverse import close_omniverse_router
+    
     if os.environ.get("PORT"):
         working_port = os.environ.get("PORT", 8080)
     else:
         working_port = 9000
-    uvicorn.run(app, host="0.0.0.0", port=working_port)
+    
+    # 配置 uvicorn 服务器
+    config = uvicorn.Config(
+        app, 
+        host="0.0.0.0", 
+        port=working_port,
+        log_level="info"
+    )
+    server = uvicorn.Server(config)
+    
+    try:
+        # 启动服务器
+        asyncio.run(server.serve())
+    except KeyboardInterrupt:
+        logger.info("Server shutting down...")
+    finally:
+        # 关闭 omniverse 路由器
+        asyncio.run(close_omniverse_router())
+        logger.info("Omniverse router closed.")
